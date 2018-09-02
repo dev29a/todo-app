@@ -1,14 +1,23 @@
-const todos = [{text: 'Order cat food', completed: true},
-                {text: 'Clean kitchen', completed: false},
-                {text: 'Buy food', completed: false},
-                {text: 'Do work', completed: true},
-                {text: 'Exercise', completed: true}]
+// const todos = [{text: 'Order cat food', completed: true},
+//                 {text: 'Clean kitchen', completed: false},
+//                 {text: 'Buy food', completed: false},
+//                 {text: 'Do work', completed: true},
+//                 {text: 'Exercise', completed: true}]
+
+let todos = []
 
 // Filter object to search todos.
 const filters = {
     searchText: '',
     hideCompleted: false
 } 
+
+//Read and parse the data when app loads up
+const todosJSON = localStorage.getItem('todos')
+
+if (todosJSON !== null) {
+    todos = JSON.parse(todosJSON)
+}
 
 // const paragraphs = document.querySelectorAll('p')
 
@@ -62,6 +71,7 @@ document.querySelector('#new-todo').addEventListener('submit', function(e){
         text: e.target.elements.text.value,
         completed: false
     })
+    localStorage.setItem('todos', JSON.stringify(todos))
     renderTodos(todos, filters)
     e.target.elements.text.value = ''
 })
