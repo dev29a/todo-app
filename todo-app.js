@@ -4,7 +4,7 @@
 //                 {text: 'Do work', completed: true},
 //                 {text: 'Exercise', completed: true}]
 
-let todos = []
+let todos = getSavedTodos()
 
 // Filter object to search todos.
 const filters = {
@@ -12,12 +12,6 @@ const filters = {
     hideCompleted: false
 } 
 
-//Read and parse the data when app loads up
-const todosJSON = localStorage.getItem('todos')
-
-if (todosJSON !== null) {
-    todos = JSON.parse(todosJSON)
-}
 
 // const paragraphs = document.querySelectorAll('p')
 
@@ -27,36 +21,6 @@ if (todosJSON !== null) {
 //     }
 // })
 
-const renderTodos = function(todos, filters) {
-        //Find list of filtered todos based on filters object ---- START
-        const filteredTodos = todos.filter(function(todo, index){
-            // Below line does SearchText match as well as HideCompleted checkbox filter match.
-            // I have combined both into one.
-            return todo.text.toLowerCase().includes(filters.searchText.toLowerCase()) && (!filters.hideCompleted || !todo.completed)
-        })
-        // console.log(filteredTodos)    
-        //Find list of filtered todos based on filters object ---- END
-
-        // Incomplete todos message ------------START
-        const incompleteTodos = filteredTodos.filter(function(todo, index){
-            return !todo.completed
-        })
-
-        document.querySelector('#todos').innerHTML = ''
-
-        const summary = document.createElement('h2')
-        summary.textContent = `You have ${incompleteTodos.length} todos to complete!`
-        document.querySelector('#todos').appendChild(summary)
-        // Incomplete todos message ------------END
-
-        // Adding each todo in a paragraph ------------START
-        filteredTodos.forEach(function(todo){
-            const p = document.createElement('p')
-            p.textContent = todo.text
-            document.querySelector('#todos').appendChild(p)
-        })
-        // Adding each todo in a paragraph ------------END
-}
 
 renderTodos(todos, filters)
 
@@ -70,8 +34,8 @@ document.querySelector('#new-todo').addEventListener('submit', function(e){
     todos.push({
         text: e.target.elements.text.value,
         completed: false
-    })
-    localStorage.setItem('todos', JSON.stringify(todos))
+    })  
+    saveTodos(todos)
     renderTodos(todos, filters)
     e.target.elements.text.value = ''
 })
@@ -80,6 +44,8 @@ document.querySelector('#hide-completed').addEventListener('change', function(e)
     filters.hideCompleted = e.target.checked
     renderTodos(todos, filters)
 })
+
+
 // Listen for new todo creation --------------START
 // document.querySelector('#add-todo').addEventListener('click', function(e){
 //     console.log('Add a new todo')
